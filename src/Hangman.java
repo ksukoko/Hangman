@@ -1,10 +1,13 @@
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Random;
+import java.io.IOException;
 
 public class Hangman  {
     private static char[] hiddenWord;
     private static String randomWord;
-    private static final String[] words = {"лаборатория", "образование", "скалистый", "гитарист", "симпатия", "музыка", "велосипед", "строительство", "пластик", "дворецкий", "химия", "картография", "журналист", "контроль", "эмоции", "вдохновение", "программирование", "секретарь", "авангар", "психология", "география", "архитектор", "динамика", "театральный", "конструктор", "инженер", "ракетостроение", "оперативность", "панорама", "величие", "размышление", "защитник", "космос", "эксперимент", "песок", "музей", "фотограф", "поэзия", "рыбалка", "путешествие", "инновация", "леса", "композитор", "студент", "живопись", "горизонт", "ремесло", "танцор", "пейзаж", "путевка", "поиск"};
     private static final String[] hangmanStages = {
             """
     +---+
@@ -71,15 +74,19 @@ public class Hangman  {
    """};
 
 
-    private static void selectRandomWord()
-    {
-        Random random = new Random();
-        int randomNumber = random.nextInt(words.length);
-        randomWord = words[randomNumber];
-        hiddenWord = new char[randomWord.length()];
+    private static void selectRandomWord() {
+        try {
+            List<String> words = Files.readAllLines(Paths.get("src/Words.txt"));
+            randomWord = words.get(new Random().nextInt(words.size()));
+            hiddenWord = new char[randomWord.length()];
 
-        for (int i = 0; i < hiddenWord.length; i++){
-            hiddenWord[i] = '_';
+            for (int i = 0; i < hiddenWord.length; i++) {
+                hiddenWord[i] = '_';
+            }
+        }
+        catch(IOException e){
+            System.err.println("Ошибка при чтении файла: " + e.getMessage());
+            System.exit(1);
         }
     }
 
